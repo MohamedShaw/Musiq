@@ -1,0 +1,22 @@
+{
+  "signup-email": "البريد الالكتروني",
+  "signup-password": "كلمة المرور",
+  "signup-usename": "اسم المستخدم",
+  "signup-last-name": "الاسم الاخير ",
+  "signup-first-name": "الاسم الاول",
+  "signup-create-account": "انشاء حساب",
+  "signup-password-invalid": "يجب ان تكون علي الاقل مكونه من 8 ارقام وحروف كبيره وصغيره ورمز",
+  "signup-email-invalid": " خطا في كتابه البريد الالكتروني",
+  "email-or-phone": "البريد الالكتروني او رقم الهاتف",
+  "password": "كلمة المرور",
+  "forgot-password": "نسيت كلمة المرور؟",
+  "login": "تسجيل دخول",
+  "you-have-to-login": "يجب ان تسجل لتتمكن من الدخول",
+  "welcome": "مرحبا بك",
+  "new-user": "هل انت مستخدم جديد؟",
+  "create-account": "انشئ حساب",
+  "invalid-user": "خطأ في اسم المستخدم او كلمة المرور",
+  "try-it-again": "تأكد من البيانات",
+
+  "signup-field-required": "مطلوب"
+}

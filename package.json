@@ -1,0 +1,60 @@
+{
+  "name": "Musiqar",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "deepstream.io-client-js": "^2.3.0",
+    "moment": "^2.24.0",
+    "prop-types": "^15.6.2",
+    "react": "16.6.3",
+    "react-native": "0.58.4",
+    "react-native-camera-roll-picker": "^1.2.3",
+    "react-native-extra-dimensions-android": "^1.2.1",
+    "react-native-fast-image": "^5.1.2",
+    "react-native-fbsdk": "^0.8.0",
+    "react-native-firebase": "^5.2.1",
+    "react-native-gesture-handler": "^1.0.15",
+    "react-native-gifted-chat": "^0.7.2",
+    "react-native-google-places-autocomplete": "^1.3.9",
+    "react-native-i18n": "^2.0.15",
+    "react-native-linear-gradient": "^2.5.3",
+    "react-native-maps": "^0.23.0",
+    "react-native-mauron85-background-geolocation": "^0.5.0",
+    "react-native-modal": "^7.0.2",
+    "react-native-modal-datetime-picker": "^6.0.0",
+    "react-native-navigation": "^2.11.0",
+    "react-native-open-settings": "^1.0.1",
+    "react-native-pose": "^0.9.0",
+    "react-native-progress": "^3.5.0",
+    "react-native-reanimated": "^1.0.0-alpha.11",
+    "react-native-snackbar": "^0.5.4",
+    "react-native-sound": "^0.10.12",
+    "react-native-spinkit": "^1.1.1",
+    "react-native-star-rating": "^1.1.0",
+    "react-native-svg": "^9.2.4",
+    "react-native-swiper": "^1.5.14",
+    "react-native-vector-icons": "^6.2.0",
+    "react-native-wheel-picker-android": "^2.0.5",
+    "react-redux": "^6.0.0",
+    "recyclerlistview": "^1.3.4",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "url": "^0.11.0",
+    "yup": "^0.26.10"
+  },
+  "devDependencies": {
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "24.1.0",
+    "jest": "24.1.0",
+    "metro-react-native-babel-preset": "0.52.0",
+    "react-test-renderer": "16.6.3"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}

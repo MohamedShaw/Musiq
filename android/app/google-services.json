@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "130991984573",
+    "firebase_url": "https://breadfast-66c15.firebaseio.com",
+    "project_id": "breadfast-66c15",
+    "storage_bucket": "breadfast-66c15.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130991984573:android:790729c347d5b77a",
+        "android_client_info": {
+          "package_name": "com.musicar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130991984573-ll44aq4bnj9nd9ealug974ecm741365s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYx7kD77Rx8I0WsONZLIfd9oLVAGsgSjI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
