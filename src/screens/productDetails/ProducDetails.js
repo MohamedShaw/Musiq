@@ -9,6 +9,9 @@ import {
   Alert,
 } from 'react-native';
 import Sound from 'react-native-sound';
+import PlayerScreen from 'react-native-sound-playerview';
+import { AppView, AppButton, AppNavigation } from '../../common';
+import { AppHeader } from '../../component';
 
 const styles = StyleSheet.create({
   container: {
@@ -63,13 +66,13 @@ const Feature = ({
   buttonLabel = 'PLAY',
   status,
 }) => (
-  <View style={styles.feature}>
+  <AppView style={styles.feature} backgroundColor="white">
     <Header style={{ flex: 1 }}>{title}</Header>
     {status ? (
       <Text style={{ padding: 5 }}>{this.resultIcons[status] || ''}</Text>
     ) : null}
     <Button title={buttonLabel} onPress={onPress} />
-  </View>
+  </AppView>
 );
 class MainView extends Component {
   setTestState = (testInfo, component, status) => {
@@ -82,10 +85,22 @@ class MainView extends Component {
    * Generic play function for majority of tests
    */
   playSound = (testInfo, component) => {
+    this.setState({
+      isPlaying: true,
+    });
+    if (this.state.isPlaying) {
+      console.log('is playing');
+
+      return;
+    }
+
     this.setTestState(testInfo, component, 'pending');
 
     const callback = (error, sound) => {
       if (error) {
+        this.setState({
+          isPlaying: false,
+        });
         Alert.alert('error', error.message);
         this.setTestState(testInfo, component, 'fail');
         return;
@@ -111,6 +126,32 @@ class MainView extends Component {
     }
   };
 
+  playSoundsTOP = (testInfo, component) => {
+    this.setState({ isPlaying: false });
+    const callback = (error, sound) => {
+      if (error) {
+        Alert.alert('error', error.message);
+        this.setTestState(testInfo, component, 'fail');
+        return;
+      }
+      // Run optional pre-play callback
+      testInfo.onPrepared && testInfo.onPrepared(sound, component);
+      sound.stop(() => {
+        console.log('STOP ssssssssssssss');
+
+        // Success counts as getting to the end
+        // Release when it's done so we're not using up resources
+        sound.stop().release();
+      });
+    };
+
+    // If the audio is a 'require' then the second parameter must be the callback.
+
+    const sound = new Sound(testInfo, testInfo.basePath, error =>
+      callback(error, sound),
+    );
+  };
+
   constructor(props) {
     super(props);
     this.resultIcons = {
@@ -120,63 +161,15 @@ class MainView extends Component {
       win: '\u2713',
       fail: '\u274C',
     };
-    this.audioTests = [
-      {
-        title: 'mp3 in bundle',
-        url: `https://www.musiqar.com/uploads/tracks/${this.props.data.name}`,
-        basePath: Sound.MAIN_BUNDLE,
-      },
-      {
-        title: 'mp3 in bundle (looped)',
-        url: `https://www.musiqar.com/uploads/tracks/${this.props.data.name}`,
-        basePath: Sound.MAIN_BUNDLE,
-        onPrepared: (sound, component) => {
-          sound.setNumberOfLoops(-1);
-          component.setState({ loopingSound: sound });
-        },
-      },
-      {
-        title: 'mp3 via require()',
-        isRequire: true,
-        url: `https://www.musiqar.com/uploads/tracks/${this.props.data.name}`,
-      },
-      {
-        title: 'mp3 remote download',
-        url:
-          'https://raw.githubusercontent.com/zmxv/react-native-sound-demo/master/advertising.mp3',
-      },
-      {
-        title: "mp3 remote - file doesn't exist",
-        url:
-          'https://raw.githubusercontent.com/zmxv/react-native-sound-demo/master/file-not-here.mp3',
-      },
-      {
-        title: 'aac remote download',
-        url:
-          'https://raw.githubusercontent.com/zmxv/react-native-sound-demo/master/pew2.aac',
-      },
-      {
-        title: 'wav remote download',
-        url:
-          'https://raw.githubusercontent.com/zmxv/react-native-sound-demo/master/frog.wav',
-      },
-      {
-        title: 'aac via require()',
-        isRequire: true,
-        url: `https://www.musiqar.com/uploads/tracks/${this.props.data.name}`,
-      },
-      {
-        title: 'wav via require()',
-        isRequire: true,
-        url: `https://www.musiqar.com/uploads/tracks/${this.props.data.name}`,
-      },
-    ];
 
     Sound.setCategory('Playback', true); // true = mixWithOthers
 
-    // Special case for stopping
     this.stopSoundLooped = () => {
+      console.log('stop presss');
+      Sound.setCategory('stop', true);
       if (!this.state.loopingSound) {
+        console.log('if state ment');
+
         return;
       }
 
@@ -189,18 +182,29 @@ class MainView extends Component {
 
     this.state = {
       loopingSound: undefined,
-      tests: {},
+      tests: props.data,
+      isPlaying: false,
     };
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <Header style={styles.title}>react-native-sound-demo</Header>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.scrollContainer}
-        >
+      <AppView
+        stretch
+        flex
+        center
+        style={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          backgroundColor: 'rgba(0,0,0, .6)',
+        }}
+      >
+        <AppView stretch flex>
+          <AppHeader title={this.props.data.title} />
+
           <Feature
             status={this.state.tests[this.props.data.title]}
             key={this.props.data.id}
@@ -216,10 +220,31 @@ class MainView extends Component {
           <Feature
             title="mp3 in bundle (looped)"
             buttonLabel="STOP"
-            onPress={this.stopSoundLooped}
+            onPress={() =>
+              this.playSoundsTOP(
+                `https://www.musiqar.com/uploads/tracks/${
+                  this.props.data.name
+                }`,
+              )
+            }
           />
-        </ScrollView>
-      </View>
+
+          <AppButton
+            title="press"
+            onPress={() => {
+              AppNavigation.push({
+                name: 'PlayerScreen',
+                passProps: {
+                  title: 2,
+                  filepath: `https://www.musiqar.com/uploads/tracks/${
+                    this.props.data.name
+                  }`,
+                },
+              });
+            }}
+          />
+        </AppView>
+      </AppView>
     );
   }
 }

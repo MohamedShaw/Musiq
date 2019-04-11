@@ -30,40 +30,44 @@ class TrackList extends Component {
   render() {
     return (
       <AppView stretch flex>
-        <AppHeader title="Products" cart hideBack />
+        <AppHeader title="Tracks" hideBack />
 
         <AppList
           flatlist
           flex
           stretch
           idPathInData="id"
+          paging
           apiRequest={{
             url: `${API_ENDPOINT}tracks`,
 
             responseResolver: response => {
-              console.log('response =====?>>>>>>>>>>>>>>>', response);
+              console.log('response =====', response.data.list.data);
 
               return {
                 data: response.data.list.data,
-                pageCount: response.data.list.current_page,
+                pageCount: response.data.list.last_page,
               };
             },
             onError: error => I18n.t('ui-error-happened'),
           }}
-          rowRenderer={data => (
-            <ProductCard
-              data={data}
-              style={{
-                marginBottom: moderateScale(8),
-              }}
-            />
-          )}
+          rowRenderer={data => <ProductCard data={data} />}
           refreshControl={this.props.productList}
           noResultsComponent={
             <AppView>
               <AppText> No Data</AppText>
             </AppView>
           }
+        />
+        <AppButton
+          style={{ position: 'absolute', right: 10, bottom: 20 }}
+          leftIcon={
+            <AppIcon name="logout" type="ant" size={10} color="white" />
+          }
+          circleRadius={20}
+          onPress={() => {
+            alert('log out');
+          }}
         />
       </AppView>
     );

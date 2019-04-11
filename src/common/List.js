@@ -16,7 +16,6 @@ import Button from './Button';
 import {
   expResponsiveHeight,
   moderateScale,
-  responsiveHeight,
 } from './utils/responsiveDimensions';
 import { getThemeColor } from './utils/colors';
 import { getTheme } from './Theme';
@@ -26,7 +25,6 @@ import {
   borderStyles,
   backgroundColorStyles,
   paddingStyles,
-  textDirectionStyles,
 } from './Base';
 import Network from './Base/Network';
 
@@ -59,7 +57,6 @@ class List extends Network {
 
     this.dataProvider = new DataProvider((r1, r2) => r1 !== r2);
     this.mainIndicator = 'loading';
-    this.currentFlatListScrollOffset = 0;
 
     this.state = {
       ...super.state,
@@ -76,9 +73,7 @@ class List extends Network {
   }
 
   componentDidMount() {
-    if (this.props.flatlist) {
-      super.componentDidMount();
-    }
+    super.componentDidMount();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -146,7 +141,7 @@ class List extends Network {
     this.setData(newData);
   };
 
-  updateItemInList = (id, changedData, changedDataCB = () => {}) => {
+  updateItemInList = (id, changedData, changedDataCB = () => ({})) => {
     const { _data } = this.state.dataProvider;
 
     const index = _data.findIndex(
@@ -189,6 +184,14 @@ class List extends Network {
   renderFooter = () => {
     if (this.state.refreshing) return null;
 
+    if (this.state.loading || !this.state.firstFetchDone) {
+      return (
+        <View centerX p={5}>
+          <Indicator color={this.props.indicatorColor} size={12} />
+        </View>
+      );
+    }
+
     if (this.state.errorLabel) {
       return (
         <View centerX p={10}>
@@ -214,11 +217,7 @@ class List extends Network {
       );
     }
 
-    if (
-      this.state.dataProvider._data.length === 0 &&
-      !this.state.loading &&
-      this.state.firstFetchDone
-    ) {
+    if (this.state.dataProvider._data.length === 0) {
       if (this.props.noResultsComponent) {
         return React.cloneElement(this.props.noResultsComponent);
       }
@@ -234,66 +233,10 @@ class List extends Network {
     return null;
   };
 
-  isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-    const paddingToBottom = 100; // Distance from the bottom you want it to trigger.
-    return (
-      layoutMeasurement.height + contentOffset.y >=
-      contentSize.height - paddingToBottom
-    );
-  };
-
-  renderFlatListLoadingIndicator = () => {
-    if (this.page > this.pageCount && !this.loading) {
-      return null;
-    }
-
-    return (
-      <View centerX p={4} marginBottom={5}>
-        <Indicator color={this.props.indicatorColor} size={12} />
-      </View>
-    );
-  };
-
-  renderFlatListItem = ({ item, index }) => {
-    if (index == this.state.dataProvider._data.length) {
-      return this.renderFlatListLoadingIndicator();
-    }
-    return React.cloneElement(this.props.rowRenderer(item), {
-      addItemToList: this.addItemToList,
-      updateItemInList: this.updateItemInList,
-      removeItemFromList: this.removeItemFromList,
-    });
-  };
-
-  onFlatListScroll = ({ nativeEvent }) => {
-    const currentOffset = nativeEvent.contentOffset.y;
-    const direction =
-      currentOffset > this.currentFlatListScrollOffset ? 'down' : 'up';
-    this.currentFlatListScrollOffset = currentOffset;
-
-    if (this.props.onScroll) this.props.onScroll({ nativeEvent });
-
-    if (direction === 'up' || this.loading) return;
-
-    if (this.isCloseToBottom(nativeEvent)) {
-      if (this.page <= this.pageCount) {
-        this.fetch('loading');
-      }
-    }
-  };
-
   renderFlatList = () => (
     <FlatList
       numColumns={this.props.columns}
       horizontal={false}
-      // removeClippedSubviews
-      // getItemLayout={(data, index) => ({
-      //   length: 70,
-      //   offset: 70 * index,
-      //   index,
-      // })}
-      initialNumToRender={27}
-      maxToRenderPerBatch={30}
       contentContainerStyle={
         this.props.columns > 1
           ? {
@@ -304,11 +247,24 @@ class List extends Network {
             }
           : {}
       }
-      data={[...this.state.dataProvider._data, {}]}
+      data={this.state.dataProvider._data}
       keyExtractor={(item, index) => String(index)}
-      renderItem={this.renderFlatListItem}
-      onScroll={this.onFlatListScroll}
-      scrollEventThrottle={1000}
+      renderItem={({ item }) =>
+        React.cloneElement(this.props.rowRenderer(item), {
+          addItemToList: this.addItemToList,
+          updateItemInList: this.updateItemInList,
+          removeItemFromList: this.removeItemFromList,
+          listData: this.state.dataProvider._data,
+        })
+      }
+      onScroll={this.props.onScroll}
+      onEndReachedThreshold={0.2}
+      onEndReached={() => {
+        if (this.page < this.pageCount && !this.state.loading) {
+          this.page++;
+          this.fetch('loading');
+        }
+      }}
       ListFooterComponent={this.renderFooter}
       refreshControl={
         <RefreshControl
@@ -337,6 +293,13 @@ class List extends Network {
       }
       onScroll={this.props.onScroll}
       contentContainerStyle={[paddingStyles(this.props)]}
+      onEndReachedThreshold={0.5}
+      onEndReached={() => {
+        if (this.page < this.pageCount && !this.state.loading) {
+          this.page++;
+          this.fetch('loading');
+        }
+      }}
       renderFooter={this.renderFooter}
       refreshControl={
         <RefreshControl

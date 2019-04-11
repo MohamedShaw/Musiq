@@ -34,7 +34,7 @@ import android.support.multidex.MultiDex;
 import android.content.Context;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.zmxv.RNSound.RNSoundPackage; 
-
+import com.react.rnspinkit.RNSpinkitPackage;
 
 public class MainApplication extends NavigationApplication {
 
@@ -79,7 +79,7 @@ public class MainApplication extends NavigationApplication {
             new RNI18nPackage(),
             new LinearGradientPackage(),
             new RNSoundPackage(),
-
+            new RNSpinkitPackage(),
             new MapsPackage(),
             new BackgroundGeolocationPackage(),
             new OpenSettingsPackage()

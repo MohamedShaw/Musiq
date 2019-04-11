@@ -40,7 +40,7 @@ export const start = async () => {
     Navigation.setDefaultOptions({
       statusBar: {
         visible: true,
-        backgroundColor: '#A80080',
+        backgroundColor: '#8D3132',
       },
       topBar: {
         drawBehind: true,

@@ -1,6 +1,7 @@
 import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import I18n from 'react-native-i18n';
 // import firebase from 'react-native-firebase';
 
 const { CancelToken } = axios;
@@ -142,6 +143,12 @@ class Network extends PureComponent {
       this.pageCount = pageCount || this.pageCount;
 
       let newData = data;
+      const temp_data = [];
+
+      if (typeof newData === 'object' && !Array.isArray(newData)) {
+        Object.keys(newData).map(k => temp_data.push(newData[k]));
+      }
+      if (temp_data.length) newData = temp_data;
 
       if (transformData) {
         newData = data.map(item => transformData(item));
@@ -156,8 +163,14 @@ class Network extends PureComponent {
 
       this.setEndFetching(allData);
     } catch (error) {
+      console.log('ERROR LIST', error);
+
       if (!axios.isCancel(error[0])) {
-        this.setError(onError(error));
+        if (onError) {
+          this.setError(onError(error));
+        } else {
+          this.setError(I18n.t('ui-error-happened'));
+        }
         this.setState({
           [loadingIndicator]: false,
         });

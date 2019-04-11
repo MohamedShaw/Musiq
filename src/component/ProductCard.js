@@ -12,7 +12,7 @@ import {
   AppNavigation,
 } from '../common';
 import colors from '../common/defaults/colors';
-
+import RowItems from './RowItems';
 import cover from '../assets/imgs/cover.png';
 
 import { addProductToCart } from '../actions/shoppingCart';
@@ -24,92 +24,76 @@ class ProviderCard extends Component {
 
   componentDidMount() {}
 
-  // renderProviderImg = () => {
-  //   const { data } = this.props;
+  renderDetailes = () => {
+    const { data } = this.props;
+    return (
+      <AppView stretch flex>
+        <RowItems
+          leftItem={
+            <AppView reverse>
+              <AppText>{data.tag}</AppText>
+              <AppText left>{data.title}</AppText>
+              <AppView row>
+                <AppText> {data.views}</AppText>
+                <AppIcon
+                  name="controller-play"
+                  type="entypo"
+                  size={6}
+                  color="grey"
+                />
+              </AppView>
+            </AppView>
+          }
+          flex
+          paddingHorizontal={5}
+        />
+      </AppView>
+    );
+  };
 
-  //   return (
-  //     <AppImage
-  //       stretch
-  //       source={{ uri: `https://www.musiqar.com/uploads/media/${data.art}` }}
-  //       resizeMode="stretch"
-  //       borderRadius={10}
-  //       height={15}
-  //       bc="primary"
-  //       bw={2}
-  //     />
-  //   );
-  // };
-
-  renderProductImg = () => {
+  renderTrackImg = () => {
     const { data, hideRate } = this.props;
 
     return (
-      <AppImage
-        stretch
-        height={20}
-        source={{
-          uri: `https://www.musiqar.com/uploads/media/${data.art}`,
-        }}
-        style={{ zIndex: 10000 }}
-        resizeMode="center"
+      <AppView
+        row
+        reverse
+        paddingVertical={5}
+        borderBottomColor="grey"
+        borderBottomWidth={1}
+        paddingHorizontal={5}
       >
-        <AppView
-          linearBackgroundGradient={{
-            start: { x: 0.5, y: 0.5 },
-            end: { x: 0.5, y: 1.27 },
-            locations: [0, 0.8],
-            colors: ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 1)'],
-          }}
-          linear
+        <AppImage
           stretch
-          style={{
-            position: 'absolute',
-            right: 0,
-            left: 0,
-            top: 0,
-            bottom: 0,
-            zIndex: 2,
-            opacity: 1,
+          equalSize={16}
+          source={{
+            uri: `https://www.musiqar.com/uploads/media/${data.art}`,
           }}
+          style={{ zIndex: 10000 }}
+          resizeMode="center"
         >
           <AppView
-            backgroundColor="primary"
-            borderRadius={20}
-            height={6}
-            center
-            paddingHorizontal={5}
-            style={{
-              position: 'absolute',
-              left: 0,
+            linearBackgroundGradient={{
+              start: { x: 0.5, y: 0.5 },
+              end: { x: 0.5, y: 1.27 },
+              locations: [0, 0.8],
+              colors: ['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 1)'],
             }}
-            margin={5}
-          >
-            <AppText color="white">views :{data.views}</AppText>
-          </AppView>
-          <AppView
-            bottom
+            linear
             stretch
-            // flex
-            row
-            spaceBetween
-            paddingHorizontal={5}
-            paddingVertical={4}
             style={{
               position: 'absolute',
-              bottom: 0,
-              left: 0,
               right: 0,
+              left: 0,
+              top: 0,
+              bottom: 0,
+              zIndex: 2,
+              opacity: 1,
             }}
-          >
-            <AppView flex={3}>
-              <AppText bold color="white" numberOfLines={1}>
-                {data.title} {' / '}
-                {data.tag}
-              </AppText>
-            </AppView>
-          </AppView>
-        </AppView>
-      </AppImage>
+          />
+        </AppImage>
+        {this.renderDetailes()}
+      </AppView>
     );
   };
 
@@ -125,7 +109,6 @@ class ProviderCard extends Component {
 
   render() {
     const { style, data, ...rest } = this.props;
-
     return (
       <AppView
         style={style}
@@ -133,21 +116,21 @@ class ProviderCard extends Component {
         stretch
         // flex
         {...rest}
-        marginHorizontal={3}
-        paddingVertical={2}
-        paddingHorizontal={2}
         onPress={() => {
           AppNavigation.push({
-            name: 'productDetails',
+            name: 'PlayerScreen',
             passProps: {
-              data: this.props.data,
+              title: 2,
+              filepath: `https://www.musiqar.com/uploads/tracks/${
+                this.props.data.name
+              }`,
+              allData: this.props.listData,
+              id: this.props.data.id,
             },
           });
         }}
-        marginTop={5}
       >
-        {this.renderProductImg()}
-        {this.renderProductDetailes()}
+        {this.renderTrackImg()}
       </AppView>
     );
   }
