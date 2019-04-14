@@ -12,7 +12,7 @@ import {
   AppNavigation,
 } from '../../common';
 import Colors from '../../common/defaults/colors';
-import { AppErrorModal } from '../../component';
+import { AppErrorModal, SocialButtonsSection } from '../../component';
 import { validationSchema } from './validation';
 import { signIn, resetLoginError } from '../../actions/AuthActions';
 
@@ -129,6 +129,7 @@ class SiginIn extends Component {
             onSubmit={this.onSubmit}
           />
 
+          {/* <SocialButtonsSection /> */}
           <AppView flex />
           {this.renderSignUpButton()}
           <AppErrorModal

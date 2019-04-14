@@ -15,8 +15,6 @@ import colors from '../common/defaults/colors';
 import RowItems from './RowItems';
 import cover from '../assets/imgs/cover.png';
 
-import { addProductToCart } from '../actions/shoppingCart';
-
 class ProviderCard extends Component {
   state = {
     counter: 1,
@@ -139,10 +137,7 @@ const mapStateToProps = state => ({
   rtl: state.lang.rtl,
 });
 
-const mapDispatchToProps = dispatch => ({
-  onAddToCart: (product, counter) =>
-    dispatch(addProductToCart(product, counter)),
-});
+const mapDispatchToProps = dispatch => ({});
 
 export default connect(
   mapStateToProps,

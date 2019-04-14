@@ -33,7 +33,7 @@ export const signIn = (values, setSubmitting) => async (dispatch, getState) => {
     setSubmitting(false);
     if (!response.data.status) {
       console.log('If statment');
-      AppNavigation.setStackRoot({ name: 'productList' });
+      AppNavigation.setStackRoot({ name: 'trackList' });
       AsyncStorage.setItem('@CurrentUser', JSON.stringify(response.data));
 
       dispatch({ type: LOGIN_SUCCESS, payload: response.data });
@@ -77,7 +77,8 @@ export function signUp(values, setSubmitting) {
 
       if (!response.data.status) {
         console.log('If statment');
-        AppNavigation.setStackRoot({ name: 'productList' });
+        AppNavigation.setStackRoot({ name: 'trackList' });
+        AsyncStorage.setItem('@CurrentUser', JSON.stringify(response.data));
 
         dispatch({ type: LOGIN_SUCCESS, payload: response.data });
       } else {

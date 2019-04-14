@@ -53,60 +53,6 @@ class Header extends Component {
     return <AppView stretch flex />;
   };
 
-  renderCounter = () => {
-    if (this.props.totalCounter > 0) {
-      return (
-        <AppView
-          flex
-          center
-          circleRadius={5}
-          backgroundColor="#195945"
-          style={{
-            position: 'absolute',
-            top: 3,
-            right: 2,
-          }}
-        >
-          <AppText
-            color={this.props.totalCounter <= 98 ? 'white' : 'red'}
-            numberOfLines={1}
-            size={this.props.totalCounter >= 70 ? 4 : 5}
-          >
-            {this.props.totalCounter <= 98 ? this.props.totalCounter : '+99'}
-          </AppText>
-        </AppView>
-      );
-    }
-  };
-
-  renderCart = () => {
-    const { cart, totalCounter } = this.props;
-
-    return (
-      <AppView stretch marginHorizontal={5}>
-        <AppButton
-          leftIcon={
-            <AppIcon
-              name="shopping-cart"
-              type="font-awesome"
-              size={12}
-              color="darkgrey"
-            />
-          }
-          backgroundColor="transparent"
-          size={8}
-          ph={10}
-          onPress={() => {
-            AppNavigation.push('shoppingCart');
-          }}
-          flex
-        />
-
-        {this.renderCounter()}
-      </AppView>
-    );
-  };
-
   renderLeft = () => {
     const { menu, hideBack } = this.props;
 
@@ -156,13 +102,14 @@ class Header extends Component {
         >
           {this.props.lang === 'en' ? (
             <>
-              {this.renderLeft()}
+              {cart ? this.renderCart() : this.renderRight()}
+
               <AppView flex={3} center>
                 <AppText size={7} bold numberOfLines={1}>
                   {title}
                 </AppText>
               </AppView>
-              {cart ? this.renderCart() : this.renderRight()}
+              {this.renderLeft()}
             </>
           ) : (
             <>
@@ -183,7 +130,6 @@ class Header extends Component {
 }
 
 const mapStateToProps = state => ({
-  totalCounter: state.shoppingCart.totalCounter,
   lang: state.lang.lang,
 });
 

@@ -49,39 +49,16 @@ export const start = async () => {
       },
     });
 
-    // checkLocationPermission(true, () => {
-    //   initBackgroundGeolocation(store.dispatch, store.getState);
-    // });
+    checkLocationPermission(true, () => {
+      initBackgroundGeolocation(store.dispatch, store.getState);
+    });
     await initLang('en', true)(store.dispatch);
 
-    let cart = '';
-    let total = 0;
-    let counter = 0;
-
-    try {
-      cart = await AsyncStorage.getItem('@CART');
-      total = await AsyncStorage.getItem('@TOTAL');
-      counter = await AsyncStorage.getItem('@COUNTER');
-    } catch (error) {
-      console.log('AsyncStorage#getItem error: ', error.message);
-    }
-
-    if (cart !== null || total !== null) {
-      cart = JSON.parse(cart);
-      total = JSON.parse(total);
-
-      counter = JSON.parse(counter);
-      store.getState().shoppingCart.cart = cart;
-      store.getState().shoppingCart.totalPrice = +total;
-      store.getState().shoppingCart.totalCounter = +counter;
-    }
     // AsyncStorage.setItem('@CurrentUser', '');
 
     const { exist } = await autoLogin()(store.dispatch, store.getState);
 
     if (exist) {
-      console.log('EXIST HERE ');
-
       AppNavigation.init('MAIN_STACK', {
         name: 'trackList',
       });

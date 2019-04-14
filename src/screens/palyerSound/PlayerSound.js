@@ -42,12 +42,12 @@ export default class PlayerScreen extends React.Component {
   componentDidMount() {
     const vIndex = this.props.allData.findIndex(v => v.id === this.props.id);
 
-    next = this.props.allData[vIndex + 1].name;
-    prev = vIndex !== 0 && this.props.allData[vIndex - 1].name;
-    nextPath = `https://www.musiqar.com/uploads/tracks/${next}`;
-    prevPath = `https://www.musiqar.com/uploads/tracks/${prev}`;
+    const next = this.props.allData[vIndex + 1].name;
+    const prev = vIndex !== 0 && this.props.allData[vIndex - 1].name;
+    const nextPath = `https://www.musiqar.com/uploads/tracks/${next}`;
+    const prevPath = `https://www.musiqar.com/uploads/tracks/${prev}`;
 
-    console.log('prev', prevPath);
+    // console.log('prev', prevPath);
 
     this.setState({
       nextPath,
@@ -96,14 +96,13 @@ export default class PlayerScreen extends React.Component {
   };
 
   play = async filepath => {
-    console.log('If next press', filepath);
+    console.log('palying  press', filepath);
 
     if (this.sound) {
       this.sound.play(this.playComplete);
       this.setState({ playState: 'playing' });
     } else {
       // const filepath = this.props.filepath;
-      console.log('[Play]', filepath);
 
       this.sound = new Sound(filepath, '', error => {
         if (error) {
@@ -136,11 +135,8 @@ export default class PlayerScreen extends React.Component {
 
   pause = () => {
     if (this.sound) {
-      console.log('pause');
-
       this.sound.pause();
     }
-    console.log('pause------');
 
     this.setState({ playState: 'paused' });
   };
@@ -175,12 +171,230 @@ export default class PlayerScreen extends React.Component {
     }`;
   };
 
-  render() {
+  nextPath = () => {
+    if (this.state.vIndex === this.props.allData.length - 1) {
+      this.setState({
+        vIndex: 0,
+      });
+      if (this.sound) {
+        this.sound.release();
+        this.sound = null;
+        this.setState({
+          playState: 'paused',
+          playSeconds: 0,
+          duration: 0,
+        });
+      }
+      this.sliderEditing = false;
+
+      this.play(`${path}${this.props.allData[0].name}`);
+
+      return;
+    }
+    if (this.sound) {
+      this.sound.release();
+      this.sound = null;
+      this.setState({
+        playState: 'paused',
+        playSeconds: 0,
+        duration: 0,
+      });
+    }
+    this.sliderEditing = false;
+
+    this.play(`${path}${this.props.allData[this.state.vIndex + 1].name}`);
+    this.setState({
+      vIndex: this.state.vIndex + 1,
+    });
+    console.log(
+      'next press*****',
+      `${path}${this.props.allData[this.state.vIndex].name}`,
+    );
+  };
+
+  prevPath = () => {
+    if (this.state.vIndex === 0) {
+      const last = this.props.allData.length - 1;
+      this.setState({
+        vIndex: last,
+      });
+
+      if (this.sound) {
+        this.sound.release();
+        this.sound = null;
+        this.setState({
+          playState: 'paused',
+          playSeconds: 0,
+          duration: 0,
+        });
+      }
+      this.sliderEditing = false;
+
+      this.play(`${path}${this.props.allData[last].name}`);
+      return;
+    }
+    this.setState({
+      vIndex: this.state.vIndex - 1,
+    });
+
+    if (this.state.vIndex >= 0) {
+      if (this.sound) {
+        this.sound.release();
+        this.sound = null;
+        this.setState({
+          playState: 'paused',
+          playSeconds: 0,
+          duration: 0,
+        });
+      }
+      this.sliderEditing = false;
+
+      this.play(`${path}${this.props.allData[this.state.vIndex - 1].name}`);
+    } else {
+      alert('Last Song');
+    }
+  };
+
+  renderAction = () => {
+    const {} = this.props;
+    return (
+      <AppView stretch row center spaceAround marginBottom={20}>
+        <AppIcon
+          name="next"
+          type="foundation"
+          size={10}
+          color="white"
+          onPress={() => {
+            // alert('next');
+            this.nextPath();
+          }}
+        />
+        {this.state.playState === 'paused' ? (
+          <AppView equalSize={30} center>
+            <SpinKit
+              // style={{}}
+              isVisible={this.state.playState === 'paused'}
+              size={50}
+              type="FadingCircleAlt"
+              color="white"
+            />
+          </AppView>
+        ) : (
+          <AppImage source={img_speaker} equalSize={30} />
+        )}
+        {this.state.prevPath !== null && (
+          <AppIcon
+            name="previous"
+            type="foundation"
+            size={10}
+            color="white"
+            onPress={() => {
+              this.prevPath();
+            }}
+          />
+        )}
+      </AppView>
+    );
+  };
+
+  renderPlayButton = () => {
+    const {} = this.props;
+    return (
+      <>
+        {this.state.playState === 'playing' && (
+          <AppButton onPress={this.pause} style={{ marginHorizontal: 20 }}>
+            <AppImage source={img_pause} equalSize={7} />
+          </AppButton>
+        )}
+        {this.state.playState === 'paused' && (
+          <AppButton onPress={this.play} style={{ marginHorizontal: 20 }}>
+            <AppImage source={img_play} equalSize={7} />
+          </AppButton>
+        )}
+      </>
+    );
+  };
+
+  renderJumbNext = () => {
+    const {} = this.props;
+    return (
+      <AppButton
+        onPress={this.jumpPrev15Seconds}
+        style={{ justifyContent: 'center' }}
+      >
+        <AppImage source={img_playjumpleft} equalSize={8} />
+
+        <Text
+          style={{
+            position: 'absolute',
+            alignSelf: 'center',
+            marginTop: 1,
+            color: 'white',
+            fontSize: 12,
+          }}
+        >
+          15
+        </Text>
+      </AppButton>
+    );
+  };
+
+  renderJumbPrev = () => {
+    const {} = this.props;
+    return (
+      <AppButton
+        onPress={this.jumpNext15Seconds}
+        style={{ justifyContent: 'center' }}
+      >
+        <AppImage source={img_playjumpright} equalSize={8} />
+        <Text
+          style={{
+            position: 'absolute',
+            alignSelf: 'center',
+            marginTop: 1,
+            color: 'white',
+            fontSize: 12,
+          }}
+        >
+          15
+        </Text>
+      </AppButton>
+    );
+  };
+
+  renderSliderSec = () => {
+    const {} = this.props;
     const currentTimeString = this.getAudioTimeString(this.state.playSeconds);
     const durationString = this.getAudioTimeString(this.state.duration);
 
-    console.log('vIndex', this.state.vIndex);
+    return (
+      <>
+        <Text style={{ color: 'white', alignSelf: 'center' }}>
+          {currentTimeString}
+        </Text>
+        <Slider
+          onTouchStart={this.onSliderEditStart}
+          onTouchEnd={this.onSliderEditEnd}
+          onValueChange={this.onSliderEditing}
+          value={this.state.playSeconds}
+          maximumValue={this.state.duration}
+          maximumTrackTintColor="gray"
+          minimumTrackTintColor="white"
+          thumbTintColor="white"
+          style={{
+            flex: 1,
+            alignSelf: 'center',
+            marginHorizontal: Platform.select({ ios: 5 }),
+          }}
+        />
+        <Text style={{ color: 'white', alignSelf: 'center' }}>
+          {durationString}
+        </Text>
+      </>
+    );
+  };
 
+  render() {
     return (
       <AppView stretch flex backgroundColor="#88302F">
         <AppButton
@@ -192,176 +406,17 @@ export default class PlayerScreen extends React.Component {
           margin={5}
         />
         <AppView center stretch flex>
-          <AppView stretch row center spaceAround marginBottom={20}>
-            <AppIcon
-              name="next"
-              type="foundation"
-              size={10}
-              color="white"
-              onPress={() => {
-                // alert('next');
-                console.log('NEXT', this.state.nextPath);
-                if (this.sound) {
-                  this.sound.release();
-                  this.sound = null;
-                  this.setState({
-                    playState: 'paused',
-                    playSeconds: 0,
-                    duration: 0,
-                  });
-                }
-                this.sliderEditing = false;
+          {this.renderAction()}
+          <AppView row center marginVertical={10}>
+            {this.renderJumbPrev()}
 
-                this.setState({
-                  vIndex: this.state.vIndex + 1,
-                });
-                this.play(
-                  `${path}${this.props.allData[this.state.vIndex].name}`,
-                );
-              }}
-            />
-            {this.state.playState === 'paused' ? (
-              <AppView equalSize={30} center>
-                <SpinKit
-                  // style={{}}
-                  isVisible={this.state.playState === 'paused'}
-                  size={50}
-                  type="FadingCircleAlt"
-                  color="white"
-                />
-              </AppView>
-            ) : (
-              <AppImage source={img_speaker} equalSize={30} />
-            )}
-            {this.state.prevPath !== null && (
-              <AppIcon
-                name="previous"
-                type="foundation"
-                size={10}
-                color="white"
-                onPress={() => {
-                  if (
-                    this.state.prevPath !==
-                      'https://www.musiqar.com/uploads/tracks/false' &&
-                    this.state.vIndex > 0
-                  ) {
-                    if (this.sound) {
-                      this.sound.release();
-                      this.sound = null;
-                      this.setState({
-                        playState: 'paused',
-                        playSeconds: 0,
-                        duration: 0,
-                      });
-                    }
-                    this.sliderEditing = false;
-
-                    this.setState({
-                      vIndex: this.state.vIndex - 1,
-                    });
-                    this.play(
-                      `${path}${this.props.allData[this.state.vIndex].name}`,
-                    );
-                  } else {
-                    alert('Last Song');
-                  }
-                }}
-              />
-            )}
+            {this.renderPlayButton()}
+            {this.renderJumbNext()}
           </AppView>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              marginVertical: 15,
-            }}
-          >
-            <TouchableOpacity
-              onPress={this.jumpPrev15Seconds}
-              style={{ justifyContent: 'center' }}
-            >
-              <Image
-                source={img_playjumpleft}
-                style={{ width: 30, height: 30 }}
-              />
-              <Text
-                style={{
-                  position: 'absolute',
-                  alignSelf: 'center',
-                  marginTop: 1,
-                  color: 'white',
-                  fontSize: 12,
-                }}
-              >
-                15
-              </Text>
-            </TouchableOpacity>
-            {this.state.playState === 'playing' && (
-              <TouchableOpacity
-                onPress={this.pause}
-                style={{ marginHorizontal: 20 }}
-              >
-                <Image source={img_pause} style={{ width: 30, height: 30 }} />
-              </TouchableOpacity>
-            )}
-            {this.state.playState === 'paused' && (
-              <TouchableOpacity
-                onPress={this.play}
-                style={{ marginHorizontal: 20 }}
-              >
-                <Image source={img_play} style={{ width: 30, height: 30 }} />
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              onPress={this.jumpNext15Seconds}
-              style={{ justifyContent: 'center' }}
-            >
-              <Image
-                source={img_playjumpright}
-                style={{ width: 30, height: 30 }}
-              />
-              <Text
-                style={{
-                  position: 'absolute',
-                  alignSelf: 'center',
-                  marginTop: 1,
-                  color: 'white',
-                  fontSize: 12,
-                }}
-              >
-                15
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              marginVertical: 15,
-              marginHorizontal: 15,
-              flexDirection: 'row',
-            }}
-          >
-            <Text style={{ color: 'white', alignSelf: 'center' }}>
-              {currentTimeString}
-            </Text>
-            <Slider
-              onTouchStart={this.onSliderEditStart}
-              onTouchEnd={this.onSliderEditEnd}
-              onValueChange={this.onSliderEditing}
-              value={this.state.playSeconds}
-              maximumValue={this.state.duration}
-              maximumTrackTintColor="gray"
-              minimumTrackTintColor="white"
-              thumbTintColor="white"
-              style={{
-                flex: 1,
-                alignSelf: 'center',
-                marginHorizontal: Platform.select({ ios: 5 }),
-              }}
-            />
-            <Text style={{ color: 'white', alignSelf: 'center' }}>
-              {durationString}
-            </Text>
-          </View>
+
+          <AppView row marginHorizontal={10} marginVertical={10}>
+            {this.renderSliderSec()}
+          </AppView>
         </AppView>
       </AppView>
     );

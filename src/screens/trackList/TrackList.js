@@ -8,23 +8,12 @@ import {
 } from 'react-native';
 import I18n from 'react-native-i18n';
 
-import { Navigation } from 'react-native-navigation';
 import { connect } from 'react-redux';
-import Axois from 'axios';
-import {
-  AppButton,
-  moderateScale,
-  AppIcon,
-  AppView,
-  AppScrollView,
-  AppText,
-  AppSpinner,
-  getColors,
-  AppList,
-} from '../../common';
-import cover from '../../assets/imgs/cover.png';
+import { bindActionCreators } from 'redux';
+import { AppButton, AppIcon, AppView, AppText, AppList } from '../../common';
 import { AppHeader, ProductCard } from '../../component';
 import { API_ENDPOINT } from '../../utils/config';
+import { logout } from '../../actions/AuthActions';
 
 class TrackList extends Component {
   render() {
@@ -66,7 +55,7 @@ class TrackList extends Component {
           }
           circleRadius={20}
           onPress={() => {
-            alert('log out');
+            this.props.logout();
           }}
         />
       </AppView>
@@ -75,12 +64,12 @@ class TrackList extends Component {
 }
 
 const mapStateToProps = state => ({
-  currentLocation: state.location.current,
-  cart: state.shoppingCart.cart,
   currentUser: state.auth.currentUser,
 });
-
+const mapDispatchToProps = dispatch => ({
+  logout: bindActionCreators(logout, dispatch),
+});
 export default connect(
   mapStateToProps,
-  null,
+  mapDispatchToProps,
 )(TrackList);
