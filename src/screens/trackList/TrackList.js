@@ -11,11 +11,15 @@ import I18n from 'react-native-i18n';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { AppButton, AppIcon, AppView, AppText, AppList } from '../../common';
-import { AppHeader, ProductCard } from '../../component';
+import { AppHeader, ProductCard, AppLogoutModal } from '../../component';
 import { API_ENDPOINT } from '../../utils/config';
 import { logout } from '../../actions/AuthActions';
 
 class TrackList extends Component {
+  state = {
+    isLogOutVisible: false,
+  };
+
   render() {
     return (
       <AppView stretch flex>
@@ -55,7 +59,19 @@ class TrackList extends Component {
           }
           circleRadius={20}
           onPress={() => {
-            this.props.logout();
+            // this.props.logout();
+            this.setState({
+              isLogOutVisible: true,
+            });
+          }}
+        />
+        <AppLogoutModal
+          isVisible={this.state.isLogOutVisible}
+          message={I18n.t('password-changed-success')}
+          changeState={v => {
+            this.setState({
+              isLogOutVisible: v,
+            });
           }}
         />
       </AppView>

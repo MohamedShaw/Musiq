@@ -50,6 +50,9 @@
   "new-user": "Are You New User ?",
   "invalid-user": "Error Username or Password",
   "try-it-again": "Confirm Data",
-
+  "log-out-confrim": "Yes",
+  "log-out-cancel": "No",
+  "log-out": "Log Out",
+  "log-out-text": "Are You Sure To Log Out From App ?",
   "create-account": "Create Account"
 }

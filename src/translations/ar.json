@@ -17,6 +17,9 @@
   "create-account": "انشئ حساب",
   "invalid-user": "خطأ في اسم المستخدم او كلمة المرور",
   "try-it-again": "تأكد من البيانات",
-
+  "log-out-confrim": "نعم",
+  "log-out-cancel": "لا اوافق",
+  "log-out": "تسجيل الخروج",
+  "log-out-text": "هل انت متأكد من تسجيل الخروج",
   "signup-field-required": "مطلوب"
 }
